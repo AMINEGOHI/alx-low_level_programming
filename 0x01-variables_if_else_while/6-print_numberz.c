@@ -8,10 +8,10 @@
 /* betty style doc for function main goes there */
 int main(void)
 {
-	int i;
+	char i;
 	/* your code goes there */
-	for (i = 0; i <= 9; i++)
-		putchar((char)i);
+	for (i = '0'; i <= '9'; i++)
+		putchar(i);
 	putchar('\n');
 	return (0);
 }
