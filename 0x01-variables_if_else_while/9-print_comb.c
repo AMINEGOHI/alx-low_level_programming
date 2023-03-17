@@ -12,7 +12,7 @@ int main(void)
 	/* your code goes there */
 	for (i = 48; i <= 57; i++)
 	{
-		if(i != 48)
+		if (i != 48)
 		{
 			putchar(',');
 			putchar(' ');
