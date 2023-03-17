@@ -9,11 +9,10 @@
 /* betty style doc for function main goes there */
 int main(void)
 {
-	char alpha ;
+	char alpha;
 	/* your code goes there */
-	for( alpha = 'a'; alpha <= 'z'; alpha++ ){
+	for(alpha = 'a'; alpha <= 'z'; alpha++)
 		putchar(alpha);
-	}
 	putchar('\n');
 	return (0);
 }
