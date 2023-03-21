@@ -4,7 +4,7 @@
  * main - a simple program that outputs "_putchar"
  * Return: 0 on success
  */
-int main(void)
+int main()
 {
 	printf("_putchar");
 	return (0);
