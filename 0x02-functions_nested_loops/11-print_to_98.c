@@ -1,4 +1,5 @@
 #include "main.h"
+#include <stdio.h>
 /**
  * _printstr - prints a given string
  * @c: a null temrinated character array
