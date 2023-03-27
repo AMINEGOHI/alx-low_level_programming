@@ -1,23 +1,18 @@
 #include "main.h"
-
 /**
- * char *_strcpy - Copy a string to a new space in memory
- * @dest: destination to copy to
- * @src: source string to copy
+ * _strcpy - copies a string from one buffer to another
  *
- * Return: Pointer to dest
+ * @dest: destination buffer
+ * @src: source string
+ *
+ * Return: pointer to dest
  */
-
 char *_strcpy(char *dest, char *src)
 {
-	char *tmpdest = dest;
+	int i;
 
-	while (*src != '\0')
-	{
-		*dest = *src;
-		dest++;
-		src++;
-	}
+	for (i = 0; src[i] != '\0'; i++)
+		dest[i] = src[i];
 
-	return (tmpdest);
+	return (dest);
 }
