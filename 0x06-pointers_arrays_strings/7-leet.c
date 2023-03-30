@@ -1,31 +1,31 @@
 #include <stdio.h>
 #include "main.h"
-
 /**
- * leet - turn aeotl into 43071 respectively
- * @s: string to replace from
+ * leet - convert characters into 1337
  *
- * Description: Don't hate the hacker, hate the code :)
+ * @a: string to convert
  *
- * Return: Pointer to changed string
+ * Return: string
  */
-
-char *leet(char *s)
+char *leet(char *a)
 {
-	char *temp;
+	char *sptr = a;
+	int index = 0;
+	char translation[][10] = { { 'a', 'A', 't', 'T', 'o', 'O', 'e', 'E', 'l', 'L'}
+				  , { '4', '4', '7', '7', '0', '0', '3', '3', '1', '1'} };
 
-	temp  = s;
-
-	while (*s)
+	while (*sptr != 0)
 	{
-		(*s == 'a' || *s == 'A') ? *s = '4' : 0;
-		(*s == 'e' || *s == 'E') ? *s = '3' : 0;
-		(*s == 'o' || *s == 'O') ? *s = '0' : 0;
-		(*s == 't' || *s == 'T') ? *s = '7' : 0;
-		if (*s == 'l' || *s == 'L')
-			(*s) = '1';
-		s++;
+		if (*sptr == 'a' || *sptr == 'A' || *sptr == 'e' || *sptr == 'E'
+		    || *sptr == 'o' || *sptr == 'O' || *sptr == 't' || *sptr == 'T'
+		    || *sptr == 'l' || *sptr == 'L')
+		{
+			index = 0;
+			while (translation[0][index] != *sptr)
+				index++;
+			*sptr = translation[1][index];
+		}
+		sptr++;
 	}
-
-	return (temp);
+	return (a);
 }
