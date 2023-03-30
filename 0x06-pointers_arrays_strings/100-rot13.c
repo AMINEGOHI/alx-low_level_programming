@@ -1,40 +1,28 @@
 #include "main.h"
-
 /**
- * _ischar - returns if letter
- * @c: char to check
+ * rot13 - encodes a string in rot13
  *
- * Return: 1 if letter, else 0
- */
-
-int _ischar(char c)
-{
-	int flag;
-
-	flag = 0;
-	((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')) ? flag = 1 : 0;
-	return (flag);
-}
-
-
-/**
- * rot13 - encode a string with rot13
- * @s: string to encode
+ * @a: string to encode
  *
- * Return: pointer to string
+ * Return: encoded string
  */
-
-char *rot13(char *s)
+char *rot13(char *a)
 {
-	char *tmp;
+	char *sptr = a;
+	int index;
+	char trans[2][54] = {"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ",
+				   "nopqrstuvwxyzabcdefghijklmNOPQRSTUVWXYZABCDEFGHIJKLM"};
 
-	tmp = s;
-	do {
-		if (_ischar(*s))
+	while (*sptr != 0)
+	{
+		if ((*sptr >= 'a' && *sptr <= 'z') || (*sptr >= 'A' && *sptr <= 'Z'))
 		{
-			((*s >= 'a' && *s <= 'm') ||
-			(*s >= 'A' && *s <= 'M')) ? (*s = *s + 13) : (*s = *s - 13);
+			index = 0;
+			while (*sptr != trans[0][index])
+				index++;
+			*sptr = trans[1][index];
 		}
-	} while (*s++);
-	return (tmp);
+		sptr++;
+	}
+	return (a);
 }
