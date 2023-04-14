@@ -1,143 +1,197 @@
 #include <stdlib.h>
 #include "main.h"
-
 /**
- * _prntstr - prints a string
- *
+ * _prt - print string followed by newline
  * @s: string to print
  */
-void _prntstr(char *s)
+void _prt(char *s)
 {
-	while (*s)
+	while (*s != '\0')
 		_putchar(*s++);
+	_putchar('\n');
 }
-
 /**
- * numstrchk - checks arg array to see if the are numeric strings, converts
- * from ascii to byte int, and returns their length. Segfault on null pointer.
+ * _realloc - Re-allocate memory for a larger or smaller size
+ * @ptr: Pointer to the old memory block
+ * @old_size: The old size of the memory block
+ * @new_size: The new size of the memory block being created
  *
+ * Return: Pointer to new memory
+ */
+void *_realloc(void *ptr, unsigned int old_size, unsigned int new_size)
+{
+	void *space;
+	char *spacecpy, *ptrcpy;
+	unsigned int i;
+
+	if (new_size == 0 && ptr != NULL)
+	{
+		free(ptr);
+		return (NULL);
+	}
+	if (new_size == old_size)
+		return (ptr);
+	/* regardless, we need to make new space of new_size */
+	space = malloc(new_size);
+	if (space == NULL)
+		return (NULL);
+	/* if ptr is null, return space without copying */
+	if (ptr == NULL)
+		return (space);
+	/* copy old contents into new space */
+	spacecpy = space;
+	ptrcpy = ptr;
+	for (i = 0; i < old_size && i < new_size; i++)
+		spacecpy[i] = ptrcpy[i];
+	free(ptr);
+	return (space);
+}
+/**
+ * _calloc - Allocate memory and initalize space to zero
+ * @nmemb: number of elements
+ * @size: size of bytes
+ *
+ * Return: pointer to memory space, or NULL
+ */
+void *_calloc(unsigned int nmemb, unsigned int size)
+{
+	void *space;
+	char *memset;
+	unsigned int i;
+
+	if (nmemb == 0 || size == 0)
+		return (NULL);
+	space = malloc(nmemb * size);
+	if (space == NULL)
+		return (NULL);
+
+	memset = space;
+	for (i = 0 ; i < nmemb * size; i++)
+	{
+		*(memset + i) = 0;
+	}
+
+	return (space);
+}
+/**
+ * _notdigit - check to see if string is only digits
  * @s: string to check
  *
- * Return: Length of string. Exit 98 if not numeric.
+ * Return: 0 if only digits, 1 if non digit chars
  */
-long int numstrchk(char *s)
+int _notdigit(char *s)
 {
-	long int len = 0;
-
-	if (*s == 0)
-	{
-		_prntstr("Error\n");
-		exit(98);
-	}
-
-	while (*s)
-	{
+	for ( ; *s; s++)
 		if (*s < '0' || *s > '9')
-		{
-			_prntstr("Error\n");
-			exit(98);
-		}
-		*s -= '0';
-		len++;
+			return (1);
+	return (0);
+}
+/**
+ * rev_ - Reverse a string in place
+ * @s: string to reverse
+ */
+void rev_(char *s)
+{
+	char tmp;
+	int i, j;
+
+	for (i = 0; s[i]; i++)
+		;
+	i--;
+	for (j = 0; j <= i / 2; j++)
+	{
+		tmp = s[j];
+		s[j] = s[i - j];
+		s[i - j] = tmp;
+	}
+}
+/**
+ * _addup - add up integer array
+ * @arr: array to count
+ * @n: number of ints to count
+ * @place: which tens place to count
+ *
+ * Return: result of addition
+ */
+int _addup(int *arr, int n, int place)
+{
+	int sum, i;
+
+	for (i = 0, sum = 0; i < n; i++)
+	{
+		sum += arr[n * i + place];
+	}
+	return (sum);
+}
+/**
+ * cut_zeros - cut off my zeros
+ * @s: string to cut
+ *
+ * Return: length of s
+ */
+int cut_zeros(char *s)
+{
+	int i;
+
+	i = 0;
+	while (*s != '\0')
+	{
+		i++;
 		s++;
 	}
-	return (len);
+	i--;
+	s--;
+	while (*s == '0' && i > 0)
+	{
+		*s = '\0';
+		s--;
+		i--;
+	}
+	return (i);
 }
 
 /**
- * _calloc_buffer - allocate a block of memory of size * num and init to '0'
+ * main - multiple two numbers and print the result
+ * @argc: Number of arguments
+ * @argv: Argument strings
  *
- * @num: number of elements to allocate
- * @size: size of element
- *
- * Return: pointer to allocated space, exit 98 on failure
+ * Return: 0
  */
-void *_calloc_buffer(long int num, long int size)
+int main(int argc, char *argv[])
 {
-	void *ret;
-	char *ptr;
+	int *calc;
+	char *final;
+	unsigned int l1, l2, lsum, i, j, ntmp, rolltmp;
 
-	ret = malloc(num * size);
-	if (ret == 0)
+	if (argc != 3)
+		_prt("Error"), exit(98);
+	if (_notdigit(argv[1]) || _notdigit(argv[2]))
+		_prt("Error"), exit(98);
+	for (l1 = 0; argv[1][l1]; l1++)
+		;
+	for (l2 = 0; argv[2][l2]; l2++)
+		;
+	lsum = l1 + l2, final = malloc((lsum + 2) * sizeof(*final));
+	calc = _calloc(lsum * lsum, sizeof(int));
+	if (calc == NULL)
+		_prt("Error"), exit(98);
+	rev_(argv[1]), rev_(argv[2]);
+	for (i = 0; i < l1; i++)
 	{
-		exit(98);
-	}
-
-	size = size * num;
-	ptr = ret;
-	ptr[--size] = 0;
-	while (size--)
-		ptr[size] = '0';
-
-	return (ret);
-}
-
-/**
- * trimzero - moves pointer position to after last leading 0 in a string,
- * or last zero if all zeros
- *
- * @s: char * we want to move
- *
- * Return: new position
- */
-char *trimzero(char *s)
-{
-	while (*s == '0')
-		if (*(s + 1) != 0)
-			s++;
-		else
-			break;
-	return (s);
-}
-
-/**
- * main - multiply two  positive integer strings of arbitrary size
- *
- * @ac: number of arguments
- * @av: arugments
- *
- * Return: 0 if successful, 98 if failure
- */
-int main(int ac, char **av)
-{
-	long int len1, len2, lenres, i, j;
-	char *res;
-
-	if (ac != 3)
-	{
-		_prntstr("Error\n");
-		return (98);
-	}
-	av[2] = trimzero(av[2]);
-	av[1] = trimzero(av[1]);
-	if (*av[1] == '0' || *av[2] == '0')
-	{
-		_prntstr("0\n");
-		return (0);
-	}
-	len1 = numstrchk(av[1]);
-	len2 = numstrchk(av[2]);
-	lenres = len1 + len2;
-	res = _calloc_buffer(lenres + 1, sizeof(char));
-
-	for (i = lenres - 1, len1--; len1 >= 0; len1--, i += len2 - 1)
-		for (j = len2 - 1; j >= 0; j--, i--)
+		rolltmp = 0, ntmp = 0;
+		for (j = 0; j < l2; j++)
 		{
-			res[i] = (av[1][len1] * av[2][j] % 10) + res[i];
-			res[i - 1] = (av[1][len1] * av[2][j] / 10) + res[i - 1];
-			if (res[i] > '9')
-			{
-				res[i] -= 10;
-				res[i - 1]++;
-			}
+			ntmp = (argv[1][i] - '0') * (argv[2][j] - '0') + rolltmp;
+			calc[i * lsum + j + i] = ntmp % 10, rolltmp = ntmp / 10;
 		}
-
-	if (*res == '0')
-		_prntstr(res + 1);
-	else
-		_prntstr(res);
-	_putchar('\n');
-	free(res);
-
+		for (; j < l2 + i; j++, rolltmp /= 10)
+			calc[i * lsum + j + i] = rolltmp % 10;
+		while (rolltmp)
+			calc[i * lsum + j + i] = rolltmp % 10, rolltmp /= 10, j++;
+	}
+	for (i = 0, rolltmp = 0; i < lsum; i++, rolltmp /= 10)
+		rolltmp += _addup(calc, lsum, i), final[i] = rolltmp % 10 + '0';
+	final[i + 1] = '\0', i = cut_zeros(final), rev_(final);
+	final[i + 2] = '\0', _prt(final), free(calc), free(final);
 	return (0);
 }
