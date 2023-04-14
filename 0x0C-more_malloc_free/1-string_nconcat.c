@@ -1,41 +1,46 @@
-#include "main.h"
 #include <stdlib.h>
+#include "main.h"
 /**
- * string_nconcat - concat n bytes from s2 onto s1 in a new memory space
- * @s1: string one
- * @s2: string two
- * @n: number of bytes from s2 to concat onto s1
+ * string_nconcat - concatenates 2 strings into a new string,
+ * taking the first n from string 2. If n>strlen(s2),
+ * use whole string s2.
  *
- * Return: pointer to new string, NULL on fail
+ * @s1: first string
+ * @s2: second string
+ * @n: number of characters to take from second string
+ *
+ * Return: new string, or null on failure
  */
 char *string_nconcat(char *s1, char *s2, unsigned int n)
 {
-	char *s;
-	unsigned int i, j, len1, len2;
+	unsigned int len1, len2, i;
+	char *ptr, *ret;
 
-	if (s1 == NULL)
+	if (!s1)
 		s1 = "";
-	if (s2 == NULL)
+	if (!s2)
 		s2 = "";
 
-	for (len1 = 0; *(s1 + len1); len1++)
-		;
-	for (len2 = 0; *(s2 + len2); len2++)
-		;
-	len2++;
-
+	for (len1 = 0, ptr = s1; *ptr; ptr++)
+		len1++;
+	for (len2 = 0, ptr = s2; *ptr; ptr++)
+		len2++;
 	if (n > len2)
-		s = malloc((len1 + len2) * sizeof(*s));
-	else
-		s = malloc((len1 + n + 1) * sizeof(*s));
-	if (s == NULL)
-		return (NULL);
+		n = len2;
 
-	for (i = 0; i < len1; i++)
-		*(s + i) = *(s1 + i);
-	for (j = 0; j < len2 && j < n; i++, j++)
-		*(s + i) = *(s2 + j);
-	*(s + i) = '\0';
+	ret = malloc((len1 + n + 1) * sizeof(char));
+	if (!ret)
+		return (0);
 
-	return (s);
+	ptr = ret;
+	while (*s1)
+		*ptr++ = *s1++;
+	i = 0;
+	while (i < n)
+	{
+		*ptr++ = s2[i++];
+	}
+	*ptr = 0;
+
+	return (ret);
 }
